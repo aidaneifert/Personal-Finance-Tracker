@@ -2,9 +2,9 @@
     {
         "id": 1,
         "type": "income",
-        "ammount": "1",
-        "source": "home",
-        "date": "1996",
-        "description": "i like trains hehe"
+        "amount": "25",
+        "source": "work",
+        "date": "1995",
+        "description": "i do not like trains hehe"
     }
 ]
