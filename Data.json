@@ -1,10 +1,10 @@
 [
     {
         "id": 1,
-        "type": "income",
-        "amount": "25",
-        "source": "work",
-        "date": "1995",
-        "description": "i do not like trains hehe"
+        "type": "expense",
+        "amount": "20",
+        "category": "Entertainment",
+        "date": "1999",
+        "description": "testtest"
     }
 ]

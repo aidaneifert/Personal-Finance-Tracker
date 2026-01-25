@@ -1,28 +1,27 @@
 import json
+
 class FinanceTracker():
 
     def __init__(self):
-        self.running= True
-        self.input= None
-        self.reports= []
+        self.entries= []
         with open('Data.json', 'r') as f: 
-            self.reports = json.load(f)
+            self.entries = json.load(f)
 
     def user_input(self):
         i = input(">")
-        self.input = i.strip()
+        return i.strip()
 
     def save_to_file(self):
         with open('Data.json', 'w') as f:
-            json.dump(self.reports, f, indent= 4)
+            json.dump(self.entries, f, indent= 4)
 
     def add_income(self):
-        id = [d["id"] for d in self.reports]  #forgot how this works/ look into this. 
+        id = [d["id"] for d in self.entries]
    
         if not id:
             new_id = 1
         else:
-            i= len(self.reports)
+            i= len(self.entries)
             new_id= i + 1
 
         new_type= "income"
@@ -40,16 +39,16 @@ class FinanceTracker():
         "description":new_description
         }
         
-        self.reports.append(new_input)
+        self.entries.append(new_input)
         self.save_to_file()
 
     def add_expense(self):
-        id = [d["id"] for d in self.reports]
+        id = [d["id"] for d in self.entries]
 
         if not id:
             new_id = 1
         else:
-            i= len(self.reports)
+            i= len(self.entries)
             new_id= i + 1
 
         new_type= "expense"
@@ -67,16 +66,18 @@ class FinanceTracker():
         "description":new_description
         }
         
-        self.reports.append(new_input)
+        self.entries.append(new_input)
         self.save_to_file()
 
     def show_entries(self):
-        for dicts in self.reports:
+
+        for dicts in self.entries:
             for key,transacts in dicts.items():
                 print(f"{key}:{transacts}")
+
         print("\ntype e to edit, type r to remove, press enter to exit")
-        self.user_input()
-        i = self.input.lower()
+        i = self.user_input().lower()
+
         match i:
             case "e":
                 self.edit_entry()
@@ -88,20 +89,37 @@ class FinanceTracker():
                 print("Invalid input")
 
     def generate_report(self):
-        pass
+        expenses= [d for d in self.entries if d.get("type") == "expense"]
+        income= [d for d in self.entries if d.get("type") == "income"]
+        total_income= 0
+        total_expenses= 0
+        remaining_money= total_income - total_expenses
+
+        for i in income:
+            for key, value in i.items():
+                if key == "amount":
+                    total_income=  total_income + int(value) 
+
+        for e in expenses:
+            for key, value in e.items():
+                if key == "amount":
+                    total_expenses= total_expenses + int(value)
+
+        print(f"You have made {total_income} \nYou have spent {total_expenses} \nYou have {remaining_money} remaining")
+        input("Press Enter to continue")
 
     def edit_entry(self):
         print("Enter a transaction id to edit") 
-        self.user_input()
+        user_input = self.user_input()
 
         try:
-            to_remove = int(self.input)
+            to_remove = int(user_input)
         except ValueError:
             print("Invalid Input")
         
-        for i, d in enumerate(self.reports):
+        for i, d in enumerate(self.entries):
             if d.get("id") == to_remove:
-                entry = self.reports.pop(i)
+                entry = self.entries.pop(i)
 
         dict_id= entry.get("id")
         dict_type=  entry.get("type")
@@ -147,34 +165,33 @@ class FinanceTracker():
                 "description":new_description
                 }
 
-        self.reports.insert(i, new_input)
+        self.entries.insert(i, new_input)
         self.save_to_file()
 
     def remove_entry(self):
         print("Enter a transaction id to remove") 
-        self.user_input()
 
         try:
-            input = int(self.input)
+            input = int(self.user_input())
         except ValueError:
             print("Invalid input")
 
-        for i, d in enumerate(self.reports):
+        for i, d in enumerate(self.entries):
             if d.get("id") == input:
-                self.reports.pop(i)
+                self.entries.pop(i)
                 self.save_to_file()
 
     def main_menu(self):
-        while self.running: 
+        while True:
 
             print(("1.Add Income \n"
                    "2.Add Expense \n"
                    "3.Show/Edit Entries \n"
                    "4.Generate Report \n"
                    "5.Exit"))
-            self.user_input()
+            user_input= self.user_input() 
 
-            match self.input:
+            match user_input:          
                 case "1":
                     self.add_income()
                 case "2":
@@ -184,7 +201,7 @@ class FinanceTracker():
                 case "4":
                     self.generate_report()
                 case "5":
-                    self.running = False
+                    break
                 case _:
                     print("Invalid input")
 
