@@ -1,10 +1,1 @@
-[
-    {
-        "id": 1,
-        "type": "expense",
-        "amount": "20",
-        "category": "Entertainment",
-        "date": "1999",
-        "description": "testtest"
-    }
-]
+[]
